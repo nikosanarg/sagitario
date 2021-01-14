@@ -116,13 +116,10 @@ class bullet {
 }
 
 class star {
-    constructor(x, y, mass, colorCenter, colorSurface = '', angleRotation = 0) {
+    constructor(x, y, mass, angleRotation = 0) {
         this.x = x;
         this.y = y;
         this.mass = mass; // mass = radius
-        this.colorCenter = colorCenter;
-        this.colorSurface = colorSurface;
-        this.colorEnd = 'rgba(255,0,0,0)';
         this.angle = 0;
         this.angleRotation = angleRotation;
 
@@ -145,7 +142,7 @@ class star {
                 Math.round(this.y),
                 Math.round(this.mass)
             );
-            
+
             let r = 255;
             let g = 100;
             let b = 100;

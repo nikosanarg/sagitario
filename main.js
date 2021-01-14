@@ -17,8 +17,9 @@ const BASE_SPEED_DIAGONAL = Math.sqrt(((DIAGONAL_EQ_CONSTANT * BASE_SPEED)**2)/2
 const MIN_SPEED = 0.3;
 const SLOWLY = 8;
 const BULLET_SPEED = 8;
-const BULLET_MASS = 0.2;
+const BULLET_MASS = 0.3;
 const STARS_MAX_MASS = 30;
+const SUPERNOVA_BULLETS = 60;
 const GRAVITY_CONST = 50;
 const BH_MIN_DISTANCE = 150;
 const BH_MAX_DISTANCE = 350;
@@ -144,16 +145,23 @@ function insideStar(e) {
 
 function starExplode(e) {
     e.mass = 8;
-    for (let i=0; i<30; i++) {
-        let despX = Math.sin((i/15)*180/Math.PI);
-        let despY = Math.cos((i/15)*180/Math.PI);
-        var bulletObject = new bullet(e.x+25*despX, e.y+25*despY, e.x + 30*despX, e.y + 30*despY);
+    for (let i=0; i<SUPERNOVA_BULLETS; i++) {
+        let despX = Math.sin((i/(SUPERNOVA_BULLETS/2))*180/Math.PI);
+        let despY = Math.cos((i/(SUPERNOVA_BULLETS/2))*180/Math.PI);
+        var bulletObject = new bullet(e.x+25*despX, e.y+25*despY, e.x + 40*despX, e.y + 40*despY);
         bullets.push(bulletObject);
     }
-}
-
-function starTranslation(e) {
-
+    let searchNewDistance = true;
+        while (searchNewDistance) {
+            let newx = randomNumber(WIN_WIDTH);
+            let newy = randomNumber(WIN_HEIGHT);
+            if (distance(newx, newy, bh.x, bh.y) > BH_MIN_DISTANCE &&
+                distance(newx, newy, bh.x, bh.y) < BH_MAX_DISTANCE) {
+                e.x = newx;
+                e.y = newy;
+                searchNewDistance = false;
+            }
+        } 
 }
 
 function generateStars(cant = 10) {
@@ -161,19 +169,12 @@ function generateStars(cant = 10) {
         let searchNewDistance = true;
         while (searchNewDistance) {
             let mass = randomNumber(16)+10;
-
-            let colorCenter, colorSurface;
-            if (mass <= 15) { colorCenter = 'Salmon'; colorSurface = 'IndianRed' } 
-            else if (mass <= 19) { colorCenter = 'yellow'; colorSurface = 'orange' } 
-            else { colorCenter = 'white'; colorSurface = 'yellow' }
-            
-            let newStar = new star(randomNumber(WIN_WIDTH), randomNumber(WIN_HEIGHT), mass, colorCenter, colorSurface, 5);
+            let newStar = new star(randomNumber(WIN_WIDTH), randomNumber(WIN_HEIGHT), mass, 5);
             if (distance(newStar.x, newStar.y, bh.x, bh.y) > BH_MIN_DISTANCE &&
                 distance(newStar.x, newStar.y, bh.x, bh.y) < BH_MAX_DISTANCE) {
                 stars.push(newStar);
                 searchNewDistance = false;
             }
-            
         } 
     }
 }
