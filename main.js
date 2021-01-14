@@ -8,8 +8,8 @@ var mouse = {
     y: 0
 }
 
-const WIN_WIDTH = 1000;
-const WIN_HEIGHT = 500;
+const WIN_WIDTH = 1200;
+const WIN_HEIGHT = 600;
 const MOTOR_BRAKE = 0.97;
 const BASE_SPEED = 0.5;
 const DIAGONAL_EQ_CONSTANT = 0.585784; // hardcoded for equivalence between the simple motion vs composed motion
@@ -19,12 +19,15 @@ const SLOWLY = 8;
 const BULLET_SPEED = 8;
 const BULLET_MASS = 0.2;
 const STARS_MAX_MASS = 30;
-const GRAVITY_CONST = 65;
+const GRAVITY_CONST = 50;
 const BH_MIN_DISTANCE = 150;
 const BH_MAX_DISTANCE = 350;
 
 var blackHoleImg = new Image();
 blackHoleImg.src = 'favicon.png';
+
+var galaxyImg = new Image();
+galaxyImg.src = 'galaxyBackground.jpg';
 
 
 
@@ -92,6 +95,10 @@ function clearCanvas() {
     }
 }
 
+function drawCanvasBackground() {
+    ctx.drawImage(galaxyImg, 0, 0);
+}
+
 function randomNumber(limit) {
     return Math.floor(Math.random() * limit);
 }
@@ -153,7 +160,7 @@ function generateStars(cant = 10) {
     for (let i=0; i<cant; i++) {
         let searchNewDistance = true;
         while (searchNewDistance) {
-            let mass = randomNumber(20)+10;
+            let mass = randomNumber(16)+10;
 
             let colorCenter, colorSurface;
             if (mass <= 15) { colorCenter = 'Salmon'; colorSurface = 'IndianRed' } 
@@ -225,6 +232,7 @@ function init() {
 
 function main() {
     clearCanvas();
+    drawCanvasBackground();
 
     if (keys[87] && keys[65]) {                 // PRESS W + A  -> Up Left
         myStarship.addSpeed(-1, -1);

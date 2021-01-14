@@ -1,3 +1,13 @@
+var tColors = { // transparent colors
+    Red : 'rgba(255,0,0,0)',
+    Salmon : 'rgba(218,80,48,0)',
+    LightSalmon : 'rgba(100,63,48,0)',
+    Orange : 'rgba(100,76,48,0)',
+    Yellow : 'rgba(100,100,48,0)',
+    White : 'rgba(99,100,78,0)',
+    LightCyan : 'rgba(78,99,100,0)'
+}
+
 class starship {
     constructor(x, y, color, name) {
         this.x = x;
@@ -112,6 +122,7 @@ class star {
         this.mass = mass; // mass = radius
         this.colorCenter = colorCenter;
         this.colorSurface = colorSurface;
+        this.colorEnd = 'rgba(255,0,0,0)';
         this.angle = 0;
         this.angleRotation = angleRotation;
 
@@ -134,9 +145,25 @@ class star {
                 Math.round(this.y),
                 Math.round(this.mass)
             );
-            radgrad.addColorStop(0, this.colorCenter);
-            radgrad.addColorStop(0.4, this.colorSurface);
-            radgrad.addColorStop(1, 'rgba(255,0,0,0)');
+            
+            let r = 255;
+            let g = 100;
+            let b = 100;
+
+            if (this.mass >= 27) { r = 180 }
+            else if (this.mass >= 22) { r = 255 - Math.round(15*(this.mass-22)) }
+
+            if (this.mass >= 17) { g = 255 } 
+            else if (this.mass >= 10) { g = 101 + Math.round(22*(this.mass-10)) }
+
+            if (this.mass >= 20) { b = 255 } 
+            else if (this.mass >= 17) { b = 60 + Math.round(65*(this.mass-17)) }
+            else if (this.mass >= 12) { b = 60 }
+            else if (this.mass >= 10) { b = 100 - Math.round(20*(this.mass-17)) }
+
+            radgrad.addColorStop(0, 'white');
+            radgrad.addColorStop(0.3, String('rgba('+r+','+g+','+b+')'));
+            radgrad.addColorStop(1, String('rgba('+r+','+g+','+b+',0)'));
             ctx.fillStyle = radgrad;
             ctx.fillRect(
                 Math.round(this.x) - Math.round(this.mass),

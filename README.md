@@ -8,6 +8,7 @@
 
 # Last updates:
 
+- Added static galaxy background
 - Stars are now rendered with blur
 - Stars now explodes as supernova at certain mass
 - Bullets are now afected by surround gravity
