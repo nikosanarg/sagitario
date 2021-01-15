@@ -18,11 +18,12 @@ const MIN_SPEED = 0.3;
 const SLOWLY = 8;
 const BULLET_SPEED = 8;
 const BULLET_MASS = 0.3;
+const STARS_QUANTITY = 5;
 const STARS_MAX_MASS = 30;
 const SUPERNOVA_BULLETS = 60;
 const GRAVITY_CONST = 50;
-const BH_MIN_DISTANCE = 150;
-const BH_MAX_DISTANCE = 350;
+const BH_MIN_DISTANCE = 120;
+const BH_MAX_DISTANCE = 320;
 
 var blackHoleImg = new Image();
 blackHoleImg.src = 'favicon.png';
@@ -96,16 +97,20 @@ function clearCanvas() {
     }
 }
 
-function drawCanvasBackground() {
-    ctx.drawImage(galaxyImg, 0, 0);
-}
-
 function randomNumber(limit) {
     return Math.floor(Math.random() * limit);
 }
 
 function distance(x1, y1, x2, y2) {
     return Math.sqrt((x2-x1)**2 + (y2-y1)**2);
+}
+
+function getAngle(x1, y1, x2, y2) {
+    let angle = Math.atan2(y2-y1, x1-x2);
+    if (y1>y2) {
+        angle += 2*Math.PI;
+    }
+    return angle;
 }
 
 function addStarsGravity(e) {
@@ -152,26 +157,31 @@ function starExplode(e) {
         bullets.push(bulletObject);
     }
     let searchNewDistance = true;
-        while (searchNewDistance) {
-            let newx = randomNumber(WIN_WIDTH);
-            let newy = randomNumber(WIN_HEIGHT);
-            if (distance(newx, newy, bh.x, bh.y) > BH_MIN_DISTANCE &&
-                distance(newx, newy, bh.x, bh.y) < BH_MAX_DISTANCE) {
-                e.x = newx;
-                e.y = newy;
-                searchNewDistance = false;
-            }
-        } 
+    let newx, newy, dist;
+    while (searchNewDistance) {
+        newx = randomNumber(WIN_WIDTH);
+        newy = randomNumber(WIN_HEIGHT);
+        dist = distance(newx, newy, bh.x, bh.y);
+        if (dist > BH_MIN_DISTANCE && dist < BH_MAX_DISTANCE) {
+            e.x = newx;
+            e.y = newy;
+            searchNewDistance = false;
+        }
+    } 
 }
 
 function generateStars(cant = 10) {
     for (let i=0; i<cant; i++) {
         let searchNewDistance = true;
+        let mass, newx, newy, dist, ang, newStar;
         while (searchNewDistance) {
-            let mass = randomNumber(16)+10;
-            let newStar = new star(randomNumber(WIN_WIDTH), randomNumber(WIN_HEIGHT), mass, 5);
-            if (distance(newStar.x, newStar.y, bh.x, bh.y) > BH_MIN_DISTANCE &&
-                distance(newStar.x, newStar.y, bh.x, bh.y) < BH_MAX_DISTANCE) {
+            mass = randomNumber(16)+10;
+            newx = randomNumber(WIN_WIDTH);
+            newy = randomNumber(WIN_HEIGHT);
+            dist = distance(newx, newy, bh.x, bh.y);
+            ang = getAngle(newx, newy, bh.x, bh.y);
+            if (dist > BH_MIN_DISTANCE && dist < BH_MAX_DISTANCE) {
+                newStar = new star(newx, newy, mass, dist, ang);
                 stars.push(newStar);
                 searchNewDistance = false;
             }
@@ -213,6 +223,8 @@ var bh = new blackHole(WIN_WIDTH/2, WIN_HEIGHT/2, 100, 100, blackHoleImg);
 
 
 
+
+
 /*
 ██╗███╗░░██╗██╗████████╗░░░░██╗███╗░░░███╗░█████╗░██╗███╗░░██╗
 ██║████╗░██║██║╚══██╔══╝░░░██╔╝████╗░████║██╔══██╗██║████╗░██║
@@ -227,13 +239,15 @@ function init() {
     canvas.addEventListener('mousedown', mouseClick, false);
     canvas.addEventListener('mouseup', mouseUnclick, false);
     canvas.addEventListener('mousemove', mousePosition, false);
-    generateStars(5);
-    generateBackgroundStars();
+    generateStars(STARS_QUANTITY);
+    generateBackgroundStars(100);
 }
+
+    
 
 function main() {
     clearCanvas();
-    drawCanvasBackground();
+    ctx.drawImage(galaxyImg, 0, 0);
 
     if (keys[87] && keys[65]) {                 // PRESS W + A  -> Up Left
         myStarship.addSpeed(-1, -1);
@@ -285,6 +299,12 @@ function main() {
     }
 
     bh.draw();
+    /*
+    console.log("Black Hole: " + bh.x + " - " + bh.y);
+    console.log("Star: " + stars[0].x + " - " + stars[0].y);
+    console.log(angle(stars[0].x, stars[0].y, bh.x, bh.y));
+    console.log(distance(stars[0].x, stars[0].y, bh.x, bh.y));
+    */
 }
 
 ON && setInterval(main, 1000/fps);

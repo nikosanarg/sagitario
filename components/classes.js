@@ -116,12 +116,12 @@ class bullet {
 }
 
 class star {
-    constructor(x, y, mass, angleRotation = 0) {
+    constructor(x, y, mass, distance, ang) {
         this.x = x;
         this.y = y;
         this.mass = mass; // mass = radius
-        this.angle = 0;
-        this.angleRotation = angleRotation;
+        this.distance = distance;
+        this.ang = ang;
 
         this.draw = function () {
             ctx.arc(Math.round(this.x), Math.round(this.y), Math.floor(this.mass), 0, Math.PI*2, false);
@@ -131,6 +131,12 @@ class star {
 
             ctx.beginPath();
             ctx.closePath();
+        }
+
+        this.move = function () {
+            this.ang -= 50/this.distance**2;
+            this.x = bh.x + (this.distance * Math.cos(this.ang));
+            this.y = bh.y + (this.distance * Math.sin(this.ang));
         }
 
         this.blurDraw = function () {
@@ -161,6 +167,7 @@ class star {
             radgrad.addColorStop(0, 'white');
             radgrad.addColorStop(0.3, String('rgba('+r+','+g+','+b+')'));
             radgrad.addColorStop(1, String('rgba('+r+','+g+','+b+',0)'));
+
             ctx.fillStyle = radgrad;
             ctx.fillRect(
                 Math.round(this.x) - Math.round(this.mass),
@@ -168,12 +175,8 @@ class star {
                 this.mass * 2,
                 this.mass * 2
             );
-            /*ctx.save();
-            ctx.translate(50, 50);
-            ctx.rotate(this.angle*Math.PI/180);
-            ctx.restore();
 
-            this.angle -= this.angleRotation;*/
+            this.move();
         }
     }
 }

@@ -8,7 +8,7 @@
 
 # Last updates:
 
-- Stars now respawn in another place after explodes
+- Stars now orbits center black hole
 - Added static galaxy background
 - Stars are now rendered with blur
 - Stars now explodes as supernova at certain mass
