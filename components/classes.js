@@ -74,8 +74,9 @@ class starship {
             if (this.shooting) {
                 ctx.strokeStyle = 'red';
             } else {
-                ctx.strokeStyle = 'white';
+                ctx.strokeStyle = 'lime';
             }
+            ctx.lineWidth = 2;
             ctx.stroke();
 
             ctx.beginPath();
@@ -123,20 +124,22 @@ class star {
         this.distance = distance;
         this.ang = ang;
 
+        this.move = function () {
+            this.ang -= 180/this.distance**2;
+            this.x = bh.x + (this.distance * Math.cos(this.ang));
+            this.y = bh.y + (this.distance * Math.sin(this.ang));
+        }
+
         this.draw = function () {
             ctx.arc(Math.round(this.x), Math.round(this.y), Math.floor(this.mass), 0, Math.PI*2, false);
 
-            ctx.fillStyle = this.colorCenter;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
             ctx.fill();
 
             ctx.beginPath();
             ctx.closePath();
-        }
 
-        this.move = function () {
-            this.ang -= 50/this.distance**2;
-            this.x = bh.x + (this.distance * Math.cos(this.ang));
-            this.y = bh.y + (this.distance * Math.sin(this.ang));
+            this.move();
         }
 
         this.blurDraw = function () {

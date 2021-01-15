@@ -22,6 +22,7 @@ const STARS_QUANTITY = 5;
 const STARS_MAX_MASS = 30;
 const SUPERNOVA_BULLETS = 60;
 const GRAVITY_CONST = 50;
+const STARS_BG_QUANTITY = 100;
 const BH_MIN_DISTANCE = 120;
 const BH_MAX_DISTANCE = 320;
 
@@ -191,7 +192,13 @@ function generateStars(cant = 10) {
 
 function generateBackgroundStars(cant = 100) {
     for (let i=0; i<cant; i++) {
-        let newStar = new star(randomNumber(WIN_WIDTH), randomNumber(WIN_HEIGHT), 1, '#666');
+        let mass, newx, newy, dist, ang, newStar;
+        mass = 1;
+        newx = randomNumber(WIN_WIDTH);
+        newy = randomNumber(WIN_HEIGHT);
+        dist = distance(newx, newy, bh.x, bh.y);
+        ang = getAngle(newx, newy, bh.x, bh.y);
+        newStar = new star(newx, newy, mass, dist, ang);
         bgStars.push(newStar);
     }
 }
@@ -240,7 +247,7 @@ function init() {
     canvas.addEventListener('mouseup', mouseUnclick, false);
     canvas.addEventListener('mousemove', mousePosition, false);
     generateStars(STARS_QUANTITY);
-    generateBackgroundStars(100);
+    generateBackgroundStars(STARS_BG_QUANTITY);
 }
 
     
@@ -299,12 +306,6 @@ function main() {
     }
 
     bh.draw();
-    /*
-    console.log("Black Hole: " + bh.x + " - " + bh.y);
-    console.log("Star: " + stars[0].x + " - " + stars[0].y);
-    console.log(angle(stars[0].x, stars[0].y, bh.x, bh.y));
-    console.log(distance(stars[0].x, stars[0].y, bh.x, bh.y));
-    */
 }
 
 ON && setInterval(main, 1000/fps);
