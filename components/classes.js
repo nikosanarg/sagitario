@@ -18,10 +18,12 @@ class starship {
         this.name = name;
         this.color = color;
         this.shooting = false;
+        this.liveTime = 0;
+        this.drawing = true;
 
         this.getPosition = function () {
             console.log(this.x + "-" + this.y);
-        };
+        }
 
         this.addSpeed = function (vX, vY) {
             if (vX != 0 && vY != 0) {
@@ -31,7 +33,14 @@ class starship {
                 this.speedX += BASE_SPEED * vX;
                 this.speedY += BASE_SPEED * vY;
             }
-        };
+        }
+
+        this.respawn = function () {
+            this.x = randomNumber(WIN_WIDTH);
+            this.y = randomNumber(WIN_HEIGHT);
+            this.liveTime = 0;
+            this.drawing = true;
+        }
 
         this.moveRefresh = function () {
             if (Math.abs(this.speedX) <= MIN_SPEED) {
@@ -63,10 +72,22 @@ class starship {
                 this.y = this.radius;
                 this.speedY = 0;
             }
-        };
+        }
 
-        this.draw = function () {
-            myStarship.moveRefresh();
+        this.okToDraw = function () {
+            if (this.liveTime > 120) { 
+                return true;
+            } else {
+                this.liveTime += 1; 
+                if (this.liveTime % 5 == 0) {
+                    this.drawing = !this.drawing;
+                }
+                return this.drawing;
+            } 
+        }
+
+        this.draw = function () { 
+            addStarsGravity(this);
             ctx.arc(Math.round(this.x), Math.round(this.y), this.radius, 0, 2 * Math.PI, false);
             ctx.fillStyle = this.color;
             ctx.fill();
@@ -80,8 +101,8 @@ class starship {
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.closePath();
-        };
+            ctx.closePath();            
+        }
     }
 }
 
