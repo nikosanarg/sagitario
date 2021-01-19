@@ -27,10 +27,10 @@ const BH_MIN_DISTANCE = 120;
 const BH_MAX_DISTANCE = 320;
 
 var blackHoleImg = new Image();
-blackHoleImg.src = 'favicon.png';
+blackHoleImg.src = 'media/favicon.png';
 
 var galaxyImg = new Image();
-galaxyImg.src = 'galaxyBackground.jpg';
+galaxyImg.src = 'media/galaxyBackground.jpg';
 
 
 

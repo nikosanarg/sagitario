@@ -111,3 +111,7 @@ function generateBackgroundStars(cant = 100) {
         bgStars.push(newStar);
     }
 }
+
+function drawDinamicGrid() {
+    return false;
+}
