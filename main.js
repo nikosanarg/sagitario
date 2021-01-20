@@ -19,12 +19,13 @@ const SLOWLY = 8;
 const BULLET_SPEED = 8;
 const BULLET_MASS = 0.3;
 const STARS_QUANTITY = 5;
+const STARS_BG_QUANTITY = 100;
 const STARS_MAX_MASS = 30;
 const SUPERNOVA_BULLETS = 60;
 const GRAVITY_CONST = 50;
-const STARS_BG_QUANTITY = 100;
 const BH_MIN_DISTANCE = 120;
 const BH_MAX_DISTANCE = 320;
+const GRID_SIZE = 60; // recommend multiple of 30 
 
 var blackHoleImg = new Image();
 blackHoleImg.src = 'media/favicon.png';
@@ -49,10 +50,12 @@ galaxyImg.src = 'media/galaxyBackground.jpg';
 
 var myStarship = new starship(100, 300, 'green',"nsande");
 var enemyStarship = new starship(800, 200, 'red',"death star");
-var bullets = [];
+var bh = new blackHole(WIN_WIDTH/2, WIN_HEIGHT/2, 80, 80, blackHoleImg);
 var stars = [];
 var bgStars = [];
-var bh = new blackHole(WIN_WIDTH/2, WIN_HEIGHT/2, 100, 100, blackHoleImg);
+var bullets = [];
+var gridPoints = [];
+
 
 
 
@@ -78,6 +81,7 @@ function init() {
     canvas.addEventListener('mousemove', mousePosition, false);
     generateStars(STARS_QUANTITY);
     generateBackgroundStars(STARS_BG_QUANTITY);
+    initDynGrid();
 }
 
     
@@ -85,6 +89,7 @@ function init() {
 function main() {
     clearCanvas();
     ctx.drawImage(galaxyImg, 0, 0);
+    drawDynGrid();
 
     if (keys[87] && keys[65]) {                 // PRESS W + A  -> Up Left
         myStarship.addSpeed(-1, -1);

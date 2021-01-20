@@ -213,7 +213,7 @@ class blackHole {
         this.height = height;
         this.img = img;    
         this.angle = 0;  
-        this.mass = 30; 
+        this.mass = 50; 
 
         this.draw = function () {
             ctx.save();

@@ -51,7 +51,7 @@ function insideStar(e) {
             s.mass += BULLET_MASS;
             return true;
         }   
-        if (distance(e.x, e.y, bh.x, bh.y) <= bh.mass) {
+        if (distance(e.x, e.y, bh.x, bh.y) <= bh.mass/2) {
             return true;
         } 
     }
@@ -112,6 +112,54 @@ function generateBackgroundStars(cant = 100) {
     }
 }
 
-function drawDinamicGrid() {
-    return false;
+function initDynGrid() {
+    for (let i=0; i<= WIN_WIDTH/GRID_SIZE; i++) {
+        let row = [];
+        for (let j=0; j<= WIN_HEIGHT/GRID_SIZE; j++) {
+            row.push({x: i*GRID_SIZE, y: j*GRID_SIZE});
+        }
+        gridPoints.push(row);
+    }
+}
+
+function calculateGridPointPosition(e) {
+    let newX = 0;
+    let newY = 0;
+    let dist = 0;
+    for (let i=0; i<stars.length; i++) {
+        s = stars[i];
+        dist = Math.max(distance(e.x, e.y, s.x, s.y), s.mass*2);
+        newX += -40*(s.mass**2)*((e.x-s.x)/(Math.abs(e.x-s.x)+Math.abs(e.y-s.y)))/(dist**2);
+        newY += -40*(s.mass**2)*((e.y-s.y)/(Math.abs(e.x-s.x)+Math.abs(e.y-s.y)))/(dist**2);
+    }
+    dist = Math.max(distance(e.x, e.y, bh.x, bh.y), bh.mass*1.5);
+    newX += -20*(bh.mass**2)*((e.x-bh.x)/(Math.abs(e.x-bh.x)+Math.abs(e.y-bh.y)))/(dist**1.7);
+    newY += -20*(bh.mass**2)*((e.y-bh.y)/(Math.abs(e.x-bh.x)+Math.abs(e.y-bh.y)))/(dist**1.7);
+    return {x: e.x + newX, y: e.y + newY};
+}
+
+function drawDynGrid() {
+    let auxGrid = [];
+    for (let i=0; i<= WIN_WIDTH/GRID_SIZE; i++) {
+        let auxRow = []
+        for (let j=0; j<= WIN_HEIGHT/GRID_SIZE; j++) {
+            let pointPos = calculateGridPointPosition(gridPoints[i][j]);
+            auxRow.push(pointPos);
+
+            if (i > 0 && j > 0) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.setLineDash([2, 5]);
+                ctx.moveTo(pointPos.x, pointPos.y);
+                ctx.lineTo(auxGrid[i-1][j].x, auxGrid[i-1][j].y);
+                ctx.stroke();
+                ctx.moveTo(pointPos.x, pointPos.y);
+                ctx.lineTo(auxRow[j-1].x, auxRow[j-1].y);
+                ctx.stroke();
+            }
+            ctx.beginPath();
+            ctx.closePath();  
+        }
+        auxGrid.push(auxRow);
+    }
+    ctx.setLineDash([1, 0]);
 }
