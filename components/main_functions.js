@@ -113,9 +113,9 @@ function generateBackgroundStars(cant = 100) {
 }
 
 function initDynGrid() {
-    for (let i=0; i<= WIN_WIDTH/GRID_SIZE; i++) {
+    for (let i=0; i<= GRID_LIMIT_i; i++) {
         let row = [];
-        for (let j=0; j<= WIN_HEIGHT/GRID_SIZE; j++) {
+        for (let j=0; j<= GRID_LIMIT_j; j++) {
             row.push({x: i*GRID_SIZE, y: j*GRID_SIZE});
         }
         gridPoints.push(row);
@@ -125,36 +125,44 @@ function initDynGrid() {
 function calculateGridPointPosition(e) {
     let newX = 0;
     let newY = 0;
-    let dist = 0;
+    let dist, dx, dy;
     for (let i=0; i<stars.length; i++) {
         s = stars[i];
-        dist = Math.max(distance(e.x, e.y, s.x, s.y), s.mass*2);
-        newX += -40*(s.mass**2)*((e.x-s.x)/(Math.abs(e.x-s.x)+Math.abs(e.y-s.y)))/(dist**2);
-        newY += -40*(s.mass**2)*((e.y-s.y)/(Math.abs(e.x-s.x)+Math.abs(e.y-s.y)))/(dist**2);
+        dx = e.x - s.x;
+        dy = e.y - s.y;
+        dist = Math.max(distance(e.x, e.y, s.x, s.y), s.mass*2.7);
+        newX += -80*(s.mass**2)*((dx)/(Math.abs(dx)+Math.abs(dy)))/(dist**2);
+        newY += -80*(s.mass**2)*((dy)/(Math.abs(dx)+Math.abs(dy)))/(dist**2);
     }
-    dist = Math.max(distance(e.x, e.y, bh.x, bh.y), bh.mass*1.5);
-    newX += -20*(bh.mass**2)*((e.x-bh.x)/(Math.abs(e.x-bh.x)+Math.abs(e.y-bh.y)))/(dist**1.7);
-    newY += -20*(bh.mass**2)*((e.y-bh.y)/(Math.abs(e.x-bh.x)+Math.abs(e.y-bh.y)))/(dist**1.7);
+    dist = Math.max(distance(e.x, e.y, bh.x, bh.y), bh.mass);
+    dx = e.x - bh.x;
+    dy = e.y - bh.y;
+    newX += -50*(bh.mass**2)*((dx)/(Math.abs(dx)+Math.abs(dy)))/(dist**2);
+    newY += -50*(bh.mass**2)*((dy)/(Math.abs(dx)+Math.abs(dy)))/(dist**2);
     return {x: e.x + newX, y: e.y + newY};
 }
 
 function drawDynGrid() {
     let auxGrid = [];
-    for (let i=0; i<= WIN_WIDTH/GRID_SIZE; i++) {
-        let auxRow = []
-        for (let j=0; j<= WIN_HEIGHT/GRID_SIZE; j++) {
+    for (let i=0; i<= GRID_LIMIT_i; i++) {
+        let auxRow = [];
+        for (let j=0; j<= GRID_LIMIT_j; j++) {
             let pointPos = calculateGridPointPosition(gridPoints[i][j]);
             auxRow.push(pointPos);
 
             if (i > 0 && j > 0) {
-                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-                ctx.setLineDash([2, 5]);
-                ctx.moveTo(pointPos.x, pointPos.y);
-                ctx.lineTo(auxGrid[i-1][j].x, auxGrid[i-1][j].y);
-                ctx.stroke();
-                ctx.moveTo(pointPos.x, pointPos.y);
-                ctx.lineTo(auxRow[j-1].x, auxRow[j-1].y);
-                ctx.stroke();
+                ctx.strokeStyle = 'rgba(100,255,100,0.15)';
+                ctx.setLineDash([5, 5]);
+                if (j != GRID_LIMIT_j) {
+                    ctx.moveTo(pointPos.x, pointPos.y);
+                    ctx.lineTo(auxGrid[i-1][j].x, auxGrid[i-1][j].y);
+                    ctx.stroke();
+                }
+                if (i != GRID_LIMIT_i) {
+                    ctx.moveTo(pointPos.x, pointPos.y);
+                    ctx.lineTo(auxRow[j-1].x, auxRow[j-1].y);
+                    ctx.stroke();
+                }
             }
             ctx.beginPath();
             ctx.closePath();  

@@ -1,4 +1,5 @@
-const ON = true;
+var ON = true;
+var GRID = true;
 var canvas;
 var ctx;
 var fps = 60;
@@ -10,22 +11,29 @@ var mouse = {
 
 const WIN_WIDTH = 1200;
 const WIN_HEIGHT = 600;
+
 const MOTOR_BRAKE = 0.97;
 const BASE_SPEED = 0.5;
 const DIAGONAL_EQ_CONSTANT = 0.585784; // hardcoded for equivalence between the simple motion vs composed motion
 const BASE_SPEED_DIAGONAL = Math.sqrt(((DIAGONAL_EQ_CONSTANT * BASE_SPEED)**2)/2);
 const MIN_SPEED = 0.1;
 const SLOWLY = 8;
+const GRAVITY_CONST = 50;
+
 const BULLET_SPEED = 8;
-const BULLET_MASS = 0.3;
+const BULLET_MASS = 0.3; // add this mass to star target
+
 const STARS_QUANTITY = 5;
 const STARS_BG_QUANTITY = 100;
 const STARS_MAX_MASS = 30;
 const SUPERNOVA_BULLETS = 60;
-const GRAVITY_CONST = 50;
-const BH_MIN_DISTANCE = 120;
+
+const BH_MIN_DISTANCE = 80;
 const BH_MAX_DISTANCE = 320;
-const GRID_SIZE = 60; // recommend multiple of 30 
+
+const GRID_SIZE = 50; // recommend multiple of 30 
+const GRID_LIMIT_i = WIN_WIDTH/GRID_SIZE;
+const GRID_LIMIT_j = WIN_HEIGHT/GRID_SIZE;
 
 var blackHoleImg = new Image();
 blackHoleImg.src = 'media/favicon.png';
@@ -89,7 +97,7 @@ function init() {
 function main() {
     clearCanvas();
     ctx.drawImage(galaxyImg, 0, 0);
-    drawDynGrid();
+    GRID && drawDynGrid();
 
     if (keys[87] && keys[65]) {                 // PRESS W + A  -> Up Left
         myStarship.addSpeed(-1, -1);
@@ -119,14 +127,22 @@ function main() {
         (keys[68]) && myStarship.addSpeed(1, 0);        // PRESS JUST D     -> Right
     }
 
+    if (keys[82]) {                                     // PRESS R
+        rNotPressed && myStarship.respawn();   
+        rNotPressed = false;
+    } else {
+        rNotPressed = true;
+    }
+
     if (keys[32]) {                                     // PRESS SPACEBAR
-        if (spaceNotPressed) {
-            myStarship.respawn();
-        }        
+        spaceNotPressed && (GRID = !GRID);
         spaceNotPressed = false;
     } else {
         spaceNotPressed = true;
     }
+
+    myStarship.moveRefresh();
+    myStarship.okToDraw() && myStarship.draw();
 
     for (let i=0; i<bgStars.length; i++) { bgStars[i].draw() }
 
@@ -137,8 +153,7 @@ function main() {
         stars[i].blurDraw();
     }
     
-    myStarship.moveRefresh();
-    myStarship.okToDraw() && myStarship.draw();
+    
     
     //enemyStarship.draw();
 
