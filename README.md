@@ -8,6 +8,7 @@
 
 # Last updates:
 
+- Added grid for the bodies gravity influence
 - Stars now orbits center black hole
 - Added static galaxy background
 - Stars are now rendered with blur
