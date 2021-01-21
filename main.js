@@ -12,6 +12,9 @@ var mouse = {
 const WIN_WIDTH = 1200;
 const WIN_HEIGHT = 600;
 
+const VIDEO_FREQUENCY = 1000 / fps;
+const GAME_MINUTES = 5;
+
 const MOTOR_BRAKE = 0.97;
 const BASE_SPEED = 0.5;
 const DIAGONAL_EQ_CONSTANT = 0.585784; // hardcoded for equivalence between the simple motion vs composed motion
@@ -22,16 +25,18 @@ const GRAVITY_CONST = 50;
 
 const BULLET_SPEED = 8;
 const BULLET_MASS = 0.3; // add this mass to star target
+const BULLET_DAMAGE = 2; // reduce this life to starships
 
 const STARS_QUANTITY = 5;
-const STARS_BG_QUANTITY = 200;
+const STARS_BG_QUANTITY = 100;
 const STARS_MAX_MASS = 30;
 const SUPERNOVA_BULLETS = 60;
+const STAR_DAMAGE = 0.5;
 
 const BH_MIN_DISTANCE = 100;
 const BH_MAX_DISTANCE = 310;
 
-const GRID_SIZE = 50; // recommend multiple of 30 
+const GRID_SIZE = 60; // recommended: 30, ideal: 50
 const GRID_LIMIT_i = WIN_WIDTH/GRID_SIZE;
 const GRID_LIMIT_j = WIN_HEIGHT/GRID_SIZE;
 
@@ -63,6 +68,8 @@ var stars = [];
 var bgStars = [];
 var bullets = [];
 var gridPoints = [];
+
+var starships = [myStarship, enemyStarship];
 
 
 
@@ -134,12 +141,18 @@ function main() {
         rNotPressed = true;
     }
 
-    if (keys[32]) {                                     // PRESS SPACEBAR
+    if (keys[71]) {                                     // PRESS G
         spaceNotPressed && (GRID = !GRID);
         spaceNotPressed = false;
     } else {
         spaceNotPressed = true;
     }
+
+
+
+
+
+
 
     myStarship.moveRefresh();
     myStarship.okToDraw() && myStarship.draw();
@@ -147,10 +160,12 @@ function main() {
     for (let i=0; i<bgStars.length; i++) { bgStars[i].draw() }
 
     for (let i=0; i<stars.length; i++) { 
-        if (stars[i].mass > STARS_MAX_MASS) {
-            starExplode(stars[i]);
+        let s = stars[i];
+        if (s.mass > STARS_MAX_MASS) {
+            starExplode(s);
         }
-        stars[i].blurDraw();
+        
+        s.blurDraw();
     }
     
     
@@ -158,7 +173,7 @@ function main() {
     //enemyStarship.draw();
 
     for (let i=0; i<bullets.length; i++) {
-        if (bullets[i].outWindow || insideStar(bullets[i])) {
+        if (bullets[i].outWindow || insideStar(bullets[i]) || insideStarship(bullets[i])) {
             bullets.splice(i, 1);
             i--;
         } else {
@@ -167,6 +182,12 @@ function main() {
     }
 
     bh.draw();
+    insideStar(myStarship, false);
+
+    drawTimeLeft(myStarship);
+    drawLifeBar(myStarship);
+
+    myStarship.msTime -= .25 - timeDilationNearStar(myStarship);
 }
 
-ON && setInterval(main, 1000/fps);
+ON && setInterval(main, VIDEO_FREQUENCY);

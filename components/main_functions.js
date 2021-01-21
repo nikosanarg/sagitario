@@ -7,6 +7,36 @@ function clearCanvas() {
     }
 }
 
+function drawTimeLeft(e) {
+    ctx.font = "30px Goldman";
+    ctx.fillStyle = "cyan";
+    ctx.textAlign = "center";
+    ctx.fillText(String(Math.round(e.msTime / VIDEO_FREQUENCY)), WIN_WIDTH/2, 50);
+}
+
+function drawLifeBar(e) {
+    ctx.beginPath();
+    ctx.lineWidth = "3";
+    ctx.strokeStyle = "purple";
+    ctx.rect(WIN_WIDTH/2 - 100, 10, 202, 15);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.lineWidth = "0";
+    let r = 255 - Math.round(2.5 * e.life);;
+    let g = Math.round(2.5 * e.life);
+    ctx.fillStyle = 'rgb('+r+','+g+',0)';
+    ctx.rect(WIN_WIDTH/2 - 99, 11, Math.max(0, Math.ceil(e.life) * 2), 13);
+    ctx.fill();
+}
+
+function seeDamageWindow() {
+    ctx.beginPath();
+    ctx.lineWidth = "0";
+    ctx.fillStyle = 'rgba(' + 255 + ', ' + 100 + ', 0, 0.05)';
+    ctx.rect(0, 0, WIN_WIDTH, WIN_HEIGHT);
+    ctx.fill();
+}
+
 function randomNumber(limit) {
     return Math.floor(Math.random() * limit);
 }
@@ -44,18 +74,53 @@ function addStarsGravity(e) {
     e.speedY += addSpeedY;
 }
 
-function insideStar(e) {
+function insideStar(e, isBullet = true) {
     for (let i=0; i<stars.length; i++) {
         let s = stars[i];
         if (distance(e.x, e.y, s.x, s.y) <= s.mass) {
-            s.mass += BULLET_MASS;
+            if (isBullet) s.mass += BULLET_MASS
+            else { 
+                e.life -= STAR_DAMAGE;
+                seeDamageWindow();
+            }
             return true;
         }   
-        if (distance(e.x, e.y, bh.x, bh.y) <= bh.mass/2) {
+    }
+    if (distance(e.x, e.y, bh.x, bh.y) <= bh.mass/2) {
+        if (isBullet) s.mass += BULLET_MASS
+        else { 
+            e.life -= STAR_DAMAGE * 2;
+            seeDamageWindow();
+        }
+        return true;
+    } 
+    return false;
+}
+
+function insideStarship(e) {
+    for (let i=0; i<starships.length; i++) {
+        let s = starships[i];
+        if (distance(e.x, e.y, s.x, s.y) < s.radius) {
+            s.life -= BULLET_DAMAGE;
             return true;
-        } 
+        }   
     }
     return false;
+}
+
+function timeDilationNearStar(e) {
+    let timeDilation = 0;
+    for (let i=0; i<stars.length; i++) {
+        let s = stars[i];
+        if (distance(e.x, e.y, s.x, s.y) <= s.mass*2.5) {
+            timeDilation += s.mass / 20;
+        }   
+    }
+    if (distance(e.x, e.y, bh.x, bh.y) <= bh.mass*2.5) {
+        timeDilation += bh.mass / 20;
+    } 
+    if (timeDilation > 0.25) timeDilation = 0.25;
+    return timeDilation;
 }
 
 function starExplode(e) {

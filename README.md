@@ -8,6 +8,7 @@
 
 # Last updates:
 
+- Added ship life, damage and desc live time
 - Added respawn and on/off grid
 - Added grid for the bodies gravity influence
 - Stars now orbits center black hole
