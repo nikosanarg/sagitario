@@ -24,12 +24,12 @@ const BULLET_SPEED = 8;
 const BULLET_MASS = 0.3; // add this mass to star target
 
 const STARS_QUANTITY = 5;
-const STARS_BG_QUANTITY = 100;
+const STARS_BG_QUANTITY = 200;
 const STARS_MAX_MASS = 30;
 const SUPERNOVA_BULLETS = 60;
 
-const BH_MIN_DISTANCE = 80;
-const BH_MAX_DISTANCE = 320;
+const BH_MIN_DISTANCE = 100;
+const BH_MAX_DISTANCE = 310;
 
 const GRID_SIZE = 50; // recommend multiple of 30 
 const GRID_LIMIT_i = WIN_WIDTH/GRID_SIZE;

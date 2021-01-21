@@ -100,15 +100,22 @@ function generateStars(cant = 10) {
 }
 
 function generateBackgroundStars(cant = 100) {
+    let mass, newx, newy, dist, ang, newStar, dNotOk, cont = 0;
     for (let i=0; i<cant; i++) {
-        let mass, newx, newy, dist, ang, newStar;
+        dNotOk = true;
         mass = 1;
-        newx = randomNumber(WIN_WIDTH);
-        newy = randomNumber(WIN_HEIGHT);
-        dist = distance(newx, newy, bh.x, bh.y);
+        while (dNotOk) {
+            newx = randomNumber(WIN_WIDTH);
+            newy = randomNumber(WIN_HEIGHT);
+            dist = distance(newx, newy, bh.x, bh.y);
+            if (dist < 250 || cont > cant/3) {
+                dNotOk = false;
+            }
+        }
         ang = getAngle(newx, newy, bh.x, bh.y);
         newStar = new star(newx, newy, mass, dist, ang);
         bgStars.push(newStar);
+        cont++;
     }
 }
 
