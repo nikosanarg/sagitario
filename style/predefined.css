@@ -25,3 +25,17 @@
 	position:relative;
 	top:1px;
 }
+
+#go-back-button {
+	display: none;
+	margin: 0 auto;
+	position: fixed;
+	left: 7%;
+	top: 4%;
+	padding: 10px;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select:none;
+	user-select:none;
+	-o-user-select:none;
+}

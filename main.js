@@ -1,6 +1,6 @@
-var ON = true;
+var ON = false;
 var GRID = true;
-var canvas;
+var MODE_PLAY, MODE_WALLPAPER, MODE_SANDBOX;
 var ctx;
 var fps = 60;
 
@@ -9,8 +9,8 @@ var mouse = {
     y: 0
 }
 
-const WIN_WIDTH = 1200;
-const WIN_HEIGHT = 600;
+var WIN_WIDTH = 1200;
+var WIN_HEIGHT = 600;
 
 const VIDEO_FREQUENCY = 1000 / fps;
 const GAME_MINUTES = 5;
@@ -25,16 +25,16 @@ const GRAVITY_CONST = 50;
 
 const BULLET_SPEED = 8;
 const BULLET_MASS = 0.3; // add this mass to star target
-const BULLET_DAMAGE = 2; // reduce this life to starships
+const BULLET_DAMAGE = 5; // reduce this life to starships
 
 const STARS_QUANTITY = 5;
 const STARS_BG_QUANTITY = 100;
 const STARS_MAX_MASS = 30;
 const SUPERNOVA_BULLETS = 60;
-const STAR_DAMAGE = 0.5;
+const STAR_DAMAGE = 1.5;
 
-const BH_MIN_DISTANCE = 100;
-const BH_MAX_DISTANCE = 310;
+var BH_MIN_DISTANCE = 100;
+var BH_MAX_DISTANCE = 310;
 
 const GRID_SIZE = 60; // recommended: 30, ideal: 50
 const GRID_LIMIT_i = WIN_WIDTH/GRID_SIZE;
@@ -68,44 +68,13 @@ var stars = [];
 var bgStars = [];
 var bullets = [];
 var gridPoints = [];
-
-var starships = [myStarship, enemyStarship];
-
+var starships = [myStarship];
 
 
 
 
 
-
-
-
-
-/*
-██╗███╗░░██╗██╗████████╗░░░░██╗███╗░░░███╗░█████╗░██╗███╗░░██╗
-██║████╗░██║██║╚══██╔══╝░░░██╔╝████╗░████║██╔══██╗██║████╗░██║
-██║██╔██╗██║██║░░░██║░░░░░██╔╝░██╔████╔██║███████║██║██╔██╗██║
-██║██║╚████║██║░░░██║░░░░██╔╝░░██║╚██╔╝██║██╔══██║██║██║╚████║
-██║██║░╚███║██║░░░██║░░░██╔╝░░░██║░╚═╝░██║██║░░██║██║██║░╚███║
-╚═╝╚═╝░░╚══╝╚═╝░░░╚═╝░░░╚═╝░░░░╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═╝╚═╝░░╚══╝*/
-
-function init() {
-    canvas = document.getElementById('canvas');
-    ctx = canvas.getContext('2d');
-    canvas.addEventListener('mousedown', mouseClick, false);
-    canvas.addEventListener('mouseup', mouseUnclick, false);
-    canvas.addEventListener('mousemove', mousePosition, false);
-    generateStars(STARS_QUANTITY);
-    generateBackgroundStars(STARS_BG_QUANTITY);
-    initDynGrid();
-}
-
-    
-
-function main() {
-    clearCanvas();
-    ctx.drawImage(galaxyImg, 0, 0);
-    GRID && drawDynGrid();
-
+function readkeys() {
     if (keys[87] && keys[65]) {                 // PRESS W + A  -> Up Left
         myStarship.addSpeed(-1, -1);
     } else {
@@ -147,18 +116,78 @@ function main() {
     } else {
         spaceNotPressed = true;
     }
+}
 
 
 
 
+/*
+██╗███╗░░██╗██╗████████╗░░░░██╗███╗░░░███╗░█████╗░██╗███╗░░██╗
+██║████╗░██║██║╚══██╔══╝░░░██╔╝████╗░████║██╔══██╗██║████╗░██║
+██║██╔██╗██║██║░░░██║░░░░░██╔╝░██╔████╔██║███████║██║██╔██╗██║
+██║██║╚████║██║░░░██║░░░░██╔╝░░██║╚██╔╝██║██╔══██║██║██║╚████║
+██║██║░╚███║██║░░░██║░░░██╔╝░░░██║░╚═╝░██║██║░░██║██║██║░╚███║
+╚═╝╚═╝░░╚══╝╚═╝░░░╚═╝░░░╚═╝░░░░╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═╝╚═╝░░╚══╝*/
+
+canvas.addEventListener('mousedown', mouseClick, false);
+canvas.addEventListener('mouseup', mouseUnclick, false);
+canvas.addEventListener('mousemove', mousePosition, false);
+
+function init() {
+    stars = [];
+    bgStars = [];
+    bullets = [];
+    gridPoints = [];
+    BH_MIN_DISTANCE = 100;
+    BH_MAX_DISTANCE = 310;
+    bh = new blackHole(WIN_WIDTH/2, WIN_HEIGHT/2, 80, 80, blackHoleImg);
+    generateStars(STARS_QUANTITY);
+    generateBackgroundStars(STARS_BG_QUANTITY);
+    initDynGrid();
+    ON = true;
+}
+
+function initWallpaperMode() {
+    stars = [];
+    bgStars = [];
+    bullets = [];
+    gridPoints = [];
+    BH_MIN_DISTANCE = 100;
+    BH_MAX_DISTANCE = 400;
+    bh = new blackHole(WIN_WIDTH/2, WIN_HEIGHT/2, 80, 80, blackHoleImg);
+    generateStars(STARS_QUANTITY);
+    generateBackgroundStars(STARS_BG_QUANTITY);
+    ON = true;
+}
+    
+
+function main() {
+    clearCanvas();
+    ctx.drawImage(galaxyImg, 0, 0, WIN_WIDTH, WIN_HEIGHT);
+    GRID && drawDynGrid();
+
+    readkeys();
 
 
+    // Starships
+    if (!MODE_WALLPAPER) {
+        if (myStarship.life > 0) {
+            myStarship.moveRefresh();
+            if (myStarship.okToDraw()) {
+            /* SERVER */ myStarship.draw(); 
+            /* CLIENT */ myStarship.msTime -= .25 - timeDilationNearStar(myStarship);
+            } 
+        } else {
+            myStarship.x = myStarship.y = -100;
+        }
+        //enemyStarship.draw();
+    }
+        
+    
+    // Background Stars
+    for (let i=0; i<bgStars.length; i++) bgStars[i].draw();
 
-    myStarship.moveRefresh();
-    myStarship.okToDraw() && myStarship.draw();
-
-    for (let i=0; i<bgStars.length; i++) { bgStars[i].draw() }
-
+    // Principal Stars
     for (let i=0; i<stars.length; i++) { 
         let s = stars[i];
         if (s.mass > STARS_MAX_MASS) {
@@ -168,10 +197,10 @@ function main() {
         s.blurDraw();
     }
     
-    
-    
-    //enemyStarship.draw();
+    // Black Hole
+    bh.draw();
 
+    // Bullets & collisions
     for (let i=0; i<bullets.length; i++) {
         if (bullets[i].outWindow || insideStar(bullets[i]) || insideStarship(bullets[i])) {
             bullets.splice(i, 1);
@@ -181,13 +210,16 @@ function main() {
         }
     }
 
-    bh.draw();
     insideStar(myStarship, false);
 
-    drawTimeLeft(myStarship);
-    drawLifeBar(myStarship);
+    // HUD
+    if (!MODE_WALLPAPER) {
+        drawTimeLeft(myStarship);
+        drawLifeBar(myStarship);
+    }
 
-    myStarship.msTime -= .25 - timeDilationNearStar(myStarship);
+    // Updates
+    
 }
 
 ON && setInterval(main, VIDEO_FREQUENCY);

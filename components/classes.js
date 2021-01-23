@@ -41,7 +41,10 @@ class starship {
             this.x = randomNumber(WIN_WIDTH);
             this.y = randomNumber(WIN_HEIGHT);
             this.liveTime = 0;
+            this.life = 100;
             this.drawing = true;
+            this.speedX = 0;
+            this.speedY = 0;
         }
 
         this.moveRefresh = function () {

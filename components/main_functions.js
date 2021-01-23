@@ -102,6 +102,7 @@ function insideStarship(e) {
         let s = starships[i];
         if (distance(e.x, e.y, s.x, s.y) < s.radius) {
             s.life -= BULLET_DAMAGE;
+            //seeDamageWindow();
             return true;
         }   
     }
