@@ -155,8 +155,8 @@ function initWallpaperMode() {
     BH_MIN_DISTANCE = 100;
     BH_MAX_DISTANCE = 400;
     bh = new blackHole(WIN_WIDTH/2, WIN_HEIGHT/2, 80, 80, blackHoleImg);
-    generateStars(STARS_QUANTITY);
-    generateBackgroundStars(STARS_BG_QUANTITY);
+    generateStars(STARS_QUANTITY * 2);
+    generateBackgroundStars(STARS_BG_QUANTITY * 3);
     ON = true;
 }
     
