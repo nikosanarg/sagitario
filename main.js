@@ -22,6 +22,7 @@ var bullets = [];
 var gridPoints = [];
 var starships = [myStarship];
 
+var play;
 
 
 
@@ -38,36 +39,44 @@ var starships = [myStarship];
 ██║██║░╚███║██║░░░██║░░░██╔╝░░░██║░╚═╝░██║██║░░██║██║██║░╚███║
 ╚═╝╚═╝░░╚══╝╚═╝░░░╚═╝░░░╚═╝░░░░╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═╝╚═╝░░╚══╝*/
 
-
-
-function init() {
+function commonInit() {
     stars = [];
     bgStars = [];
     bullets = [];
     gridPoints = [];
-    MODE_PLAY = true;
-    MODE_WALLPAPER = false;
-    MODE_SANDBOX = false;
+    bh = new blackHole(WIN_WIDTH/2, WIN_HEIGHT/2, 80, 80, blackHoleImg);
 
     canvas.style.display = 'block';
     indexWin.style.display = 'none';
     gbb.style.display = 'block';
-    WIN_WIDTH = 1200;
-    WIN_HEIGHT = 600;
     canvas.width = WIN_WIDTH;
     canvas.height = WIN_HEIGHT;
-    canvasWindow.style.padding = "'" + (Math.round(getHeight() - WIN_HEIGHT)) + "px'";
 
+    play = setInterval(main, VIDEO_FREQUENCY);
+}
+
+
+
+
+
+function init() {
+    MODE_PLAY = true;
+    MODE_WALLPAPER = false;
+    MODE_SANDBOX = false;
+    GRID = true;
     BH_MIN_DISTANCE = 100;
     BH_MAX_DISTANCE = 310;
-    bh = new blackHole(WIN_WIDTH/2, WIN_HEIGHT/2, 80, 80, blackHoleImg);
+    WIN_WIDTH = 1200;
+    WIN_HEIGHT = 600;
+    canvasWindow.style.padding = "'" + (Math.round(getHeight() - WIN_HEIGHT)) + "px'";
+
+    
+
+    ON = true;
+    commonInit();
     generateStars(STARS_QUANTITY);
     generateBackgroundStars(STARS_BG_QUANTITY);
     initDynGrid();
-
-    ON = true;
-    GRID = true;
-    ON && setInterval(main, VIDEO_FREQUENCY);
 }
 
 
@@ -76,33 +85,22 @@ function init() {
 
 function initWallpaperMode() {
     document.documentElement.requestFullscreen();
-
-    stars = [];
-    bgStars = [];
-    bullets = [];
-    gridPoints = [];
     MODE_PLAY = false;
     MODE_WALLPAPER = true;
     MODE_SANDBOX = false;
-
-    canvas.style.display = 'block';
-    indexWin.style.display = 'none';
-    gbb.style.display = 'block';
-    WIN_WIDTH = window.screen.width;
-    WIN_HEIGHT = window.screen.height;
-    canvas.width = WIN_WIDTH;
-    canvas.height = WIN_HEIGHT;
-    canvasWindow.style.padding = '0px';
-
+    GRID = false;
     BH_MIN_DISTANCE = 100;
     BH_MAX_DISTANCE = 400;
-    bh = new blackHole(WIN_WIDTH/2, WIN_HEIGHT/2, 80, 80, blackHoleImg);
-    generateStars(STARS_QUANTITY * 2);
-    generateBackgroundStars(STARS_BG_QUANTITY * 3);
+    WIN_WIDTH = window.screen.width;
+    WIN_HEIGHT = window.screen.height;
+    canvasWindow.style.padding = '0px';
+
+    
 
     ON = true;
-    GRID = false;
-    ON && setInterval(main, VIDEO_FREQUENCY);
+    commonInit();
+    generateStars(STARS_QUANTITY * 2);
+    generateBackgroundStars(STARS_BG_QUANTITY * 3);
 }
     
 

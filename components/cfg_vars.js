@@ -5,10 +5,10 @@ var MODE_PLAY = false;
 var MODE_WALLPAPER = false;
 var MODE_SANDBOX = false;
 var ctx;
-var fps = 60;
 var WIN_WIDTH = 1200;
 var WIN_HEIGHT = 600;
-const VIDEO_FREQUENCY = 1000 / fps;
+const FPS = 60;
+const VIDEO_FREQUENCY = 1000 / FPS;
 const GRID_SIZE = 60; // recommended: 30, ideal: 50
 
 // general game configuration

@@ -25,6 +25,7 @@ function getHeight() {
 }
 
 function clickGoBack() {
+    clearTimeout(play);
     if (document.fullscreenElement) document.exitFullscreen();
     MODE_PLAY = false;
     MODE_WALLPAPER = false;
