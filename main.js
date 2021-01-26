@@ -23,6 +23,7 @@ var gridPoints = [];
 var starships = [myStarship];
 
 var play;
+var damageModal = false;
 
 
 
@@ -52,6 +53,7 @@ function commonInit() {
     canvas.width = WIN_WIDTH;
     canvas.height = WIN_HEIGHT;
 
+    damageModal = false;
     play = setInterval(main, VIDEO_FREQUENCY);
 }
 
@@ -69,8 +71,6 @@ function init() {
     WIN_WIDTH = 1200;
     WIN_HEIGHT = 600;
     canvasWindow.style.padding = "'" + (Math.round(getHeight() - WIN_HEIGHT)) + "px'";
-
-    
 
     ON = true;
     commonInit();
@@ -95,8 +95,6 @@ function initWallpaperMode() {
     WIN_HEIGHT = window.screen.height;
     canvasWindow.style.padding = '0px';
 
-    
-
     ON = true;
     commonInit();
     generateStars(STARS_QUANTITY * 2);
@@ -111,6 +109,8 @@ function main() {
     clearCanvas();
     ctx.drawImage(galaxyImg, 0, 0, WIN_WIDTH, WIN_HEIGHT);
     GRID && drawDynGrid();
+
+    damageModal = false;
 
     readkeys();
 
@@ -128,7 +128,6 @@ function main() {
         //enemyStarship.draw();
     }
         
-    
     // Background Stars
     for (let i=0; i<bgStars.length; i++) bgStars[i].draw();
 
@@ -156,6 +155,7 @@ function main() {
     }
 
     insideStar(myStarship, false);
+    seeDamageWindow();
 
     // HUD
     if (!MODE_WALLPAPER) {

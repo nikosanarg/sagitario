@@ -30,11 +30,13 @@ function drawLifeBar(e) {
 }
 
 function seeDamageWindow() {
-    ctx.beginPath();
-    ctx.lineWidth = "0";
-    ctx.fillStyle = 'rgba(' + 255 + ', ' + 100 + ', 0, 0.05)';
-    ctx.rect(0, 0, WIN_WIDTH, WIN_HEIGHT);
-    ctx.fill();
+    if (damageModal) {
+        ctx.beginPath();
+        ctx.lineWidth = "0";
+        ctx.fillStyle = 'rgba(' + 255 + ', ' + 100 + ', 0, 0.05)';
+        ctx.rect(0, 0, WIN_WIDTH, WIN_HEIGHT);
+        ctx.fill();
+    }
 }
 
 function randomNumber(limit) {
@@ -81,7 +83,7 @@ function insideStar(e, isBullet = true) {
             if (isBullet) s.mass += BULLET_MASS
             else { 
                 e.life -= STAR_DAMAGE;
-                seeDamageWindow();
+                damageModal = true;
             }
             return true;
         }   
@@ -89,7 +91,7 @@ function insideStar(e, isBullet = true) {
     if (distance(e.x, e.y, bh.x, bh.y) <= bh.mass/2) {
         if (!isBullet) { 
             e.life -= STAR_DAMAGE * 2;
-            seeDamageWindow();
+            damageModal = true;
         }
         return true;
     } 
@@ -101,7 +103,7 @@ function insideStarship(e) {
         let s = starships[i];
         if (distance(e.x, e.y, s.x, s.y) < s.radius) {
             s.life -= BULLET_DAMAGE;
-            //seeDamageWindow();
+            damageModal = true;
             return true;
         }   
     }
@@ -112,12 +114,12 @@ function timeDilationNearStar(e) {
     let timeDilation = 0;
     for (let i=0; i<stars.length; i++) {
         let s = stars[i];
-        if (distance(e.x, e.y, s.x, s.y) <= s.mass*2.5) {
-            timeDilation += s.mass / 20;
+        if (distance(e.x, e.y, s.x, s.y) <= s.mass*4) {
+            timeDilation += s.mass / 150;
         }   
     }
-    if (distance(e.x, e.y, bh.x, bh.y) <= bh.mass*2.5) {
-        timeDilation += bh.mass / 20;
+    if (distance(e.x, e.y, bh.x, bh.y) <= bh.mass*2) {
+        timeDilation += bh.mass / 200;
     } 
     if (timeDilation > 0.25) timeDilation = 0.25;
     return timeDilation;
