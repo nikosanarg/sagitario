@@ -87,8 +87,7 @@ function insideStar(e, isBullet = true) {
         }   
     }
     if (distance(e.x, e.y, bh.x, bh.y) <= bh.mass/2) {
-        if (isBullet) s.mass += BULLET_MASS
-        else { 
+        if (!isBullet) { 
             e.life -= STAR_DAMAGE * 2;
             seeDamageWindow();
         }
@@ -186,9 +185,11 @@ function generateBackgroundStars(cant = 100) {
 }
 
 function initDynGrid() {
-    for (let i=0; i<= GRID_LIMIT_i; i++) {
+    let colsLength = WIN_WIDTH/GRID_SIZE
+    for (let i=0; i<=colsLength; i++) {
         let row = [];
-        for (let j=0; j<= GRID_LIMIT_j; j++) {
+        let rowsLength = WIN_HEIGHT/GRID_SIZE;
+        for (let j=0; j<=rowsLength; j++) {
             row.push({x: i*GRID_SIZE, y: j*GRID_SIZE});
         }
         gridPoints.push(row);
@@ -199,7 +200,7 @@ function calculateGridPointPosition(e) {
     let newX = 0;
     let newY = 0;
     let dist, dx, dy;
-    for (let i=0; i<stars.length; i++) {
+    for (let i=0; i<STARS_QUANTITY; i++) {
         s = stars[i];
         dx = e.x - s.x;
         dy = e.y - s.y;
@@ -217,21 +218,23 @@ function calculateGridPointPosition(e) {
 
 function drawDynGrid() {
     let auxGrid = [];
-    for (let i=0; i<= GRID_LIMIT_i; i++) {
+    let colsLength = gridPoints.length - 1;
+    for (let i=0; i<=colsLength; i++) {
         let auxRow = [];
-        for (let j=0; j<= GRID_LIMIT_j; j++) {
+        let rowsLength = gridPoints[i].length - 1;
+        for (let j=0; j<=rowsLength; j++) {
             let pointPos = calculateGridPointPosition(gridPoints[i][j]);
             auxRow.push(pointPos);
 
             if (i > 0 && j > 0) {
                 ctx.strokeStyle = 'rgba(100,255,100,0.15)';
                 ctx.setLineDash([5, 5]);
-                if (j != GRID_LIMIT_j) {
+                if (j != (gridPoints[i].length-1)) {
                     ctx.moveTo(pointPos.x, pointPos.y);
                     ctx.lineTo(auxGrid[i-1][j].x, auxGrid[i-1][j].y);
                     ctx.stroke();
                 }
-                if (i != GRID_LIMIT_i) {
+                if (i != (gridPoints.length-1)) {
                     ctx.moveTo(pointPos.x, pointPos.y);
                     ctx.lineTo(auxRow[j-1].x, auxRow[j-1].y);
                     ctx.stroke();

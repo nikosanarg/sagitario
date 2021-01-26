@@ -9,15 +9,20 @@
         <link rel="icon" type="image/png" href="media/favicon.png">
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Goldman&family=Josefin+Sans:wght@300&family=Teko:wght@300;500&display=swap" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.1/howler.core.min.js" 
+                integrity="sha512-wzeZyTAYqFv+VKD/mGwXREXBIzy4pE3E617SBskkLFuYcPQgX6px2Il3gwZwXb9DuyjYPIsbTEO/6c3+mUvoPA==" 
+                crossorigin="anonymous"></script>
         <script src="components/keypress-2.1.5.min.js"></script>
     </head>
-    <body onload="init()">
+    <body>
         <div id="indexWindow"><a href="http://pataflaca.cf" id="title">SAGITARI </a><a href="http://pataflaca.cf"><img id="black-hole-o" src="media/favicon.png" width="45px" height="45px"></a><hr>
-        <a class="playButton" onclick="return clickPlay()">JUGAR</a>
-        <a class="playButton" onclick="return clickWallpaperMode()">WALLPAPER</a></div>
+        <a class="playButton" onclick="return init()">JUGAR</a>
+        <a class="playButton" onclick="return initWallpaperMode()">WALLPAPER</a></div>
         <div id="canvasWindow"><canvas id="canvas"></canvas></div>
         <a class="playButton" id="go-back-button" onclick="return clickGoBack()">←</a>
     </body>
+    <script src="components/cfg_vars.js"></script>
     <script src="components/classes.js"></script>
     <script src="components/index_functions.js"></script>
     <script src="components/keyboard_mouse.js"></script>
