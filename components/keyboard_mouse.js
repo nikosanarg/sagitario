@@ -60,6 +60,13 @@ function readkeys() {
     } else {
         spaceNotPressed = true;
     }
+
+    if (keys[79]) {                                     // PRESS O
+        oNotPressed && (SOUND = !SOUND);
+        oNotPressed = false;
+    } else {
+        oNotPressed = true;
+    }
 }
 
 /*  ███╗░░░███╗░█████╗░██╗░░░██╗░██████╗███████╗
@@ -81,6 +88,7 @@ var mouse = {
 function mouseClick(e) {
     if (!MODE_WALLPAPER) {
         myStarship.shooting = true;
+        SOUND && s_shoot.play();
         let shotModule = distance(myStarship.x, myStarship.y, mouse.x, mouse.y);
         let distanceRatio = 13 / shotModule;
         let dx = (mouse.x - myStarship.x) * distanceRatio;

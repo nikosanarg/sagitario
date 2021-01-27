@@ -18,6 +18,7 @@ class starship {
         this.name = name;
         this.msTime = 60*GAME_MINUTES*VIDEO_FREQUENCY;
         this.life = 100;
+        this.explosion = false;
         this.color = color;
         this.shooting = false;
         this.liveTime = 0;

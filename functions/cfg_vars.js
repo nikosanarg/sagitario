@@ -1,5 +1,6 @@
 // general context configuration
 var ON = false;
+var SOUND = true;
 var GRID = true;
 var MODE_PLAY = false;
 var MODE_WALLPAPER = false;

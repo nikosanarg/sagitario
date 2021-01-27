@@ -103,6 +103,7 @@ function insideStarship(e) {
         let s = starships[i];
         if (distance(e.x, e.y, s.x, s.y) < s.radius) {
             s.life -= BULLET_DAMAGE;
+            SOUND && s_impact.play();
             damageModal = true;
             return true;
         }   
@@ -127,6 +128,7 @@ function timeDilationNearStar(e) {
 
 function starExplode(e) {
     e.mass = 8;
+    SOUND && s_supernova.play();
     for (let i=0; i<SUPERNOVA_BULLETS; i++) {
         let despX = Math.sin((i/(SUPERNOVA_BULLETS/2))*180/Math.PI);
         let despY = Math.cos((i/(SUPERNOVA_BULLETS/2))*180/Math.PI);

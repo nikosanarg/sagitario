@@ -124,6 +124,11 @@ function main() {
             } 
         } else {
             myStarship.x = myStarship.y = -100;
+            if (myStarship.explosion == false) {
+                myStarship.explosion = true;
+                SOUND && s_explosion.play();
+                // INSERT HERE EXPLOSION GIF
+            }
         }
         //enemyStarship.draw();
     }
@@ -137,7 +142,6 @@ function main() {
         if (s.mass > STARS_MAX_MASS) {
             starExplode(s);
         }
-        
         s.blurDraw();
     }
     
